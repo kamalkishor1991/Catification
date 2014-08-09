@@ -32,7 +32,7 @@ public class SMSClassification {
             if(Integer.parseInt(s[0]) > 2) al.add(s[1]);
         }
         sizeLayer = new int[]{al.size(), 10, 1};
-        theta = new ReadWriteArray().readMultArray(new File("theta.out"));
+        theta = new ReadWriteArray().readMultArray(new File("data/theta.out"));
         neuralNet = new NeuralNet(sizeLayer);
         neuralNet.setTheta(theta);
     }
@@ -40,6 +40,7 @@ public class SMSClassification {
         try {
             return instance == null ? (instance = new SMSClassification()) : instance;
         } catch (IOException e) {
+            System.out.println("Error:" +  e);
            //ignored
         }
         return instance;
@@ -86,14 +87,14 @@ public class SMSClassification {
             }
             ot[i][0] = out.get(i);
         }
-        int sizeLayer[] = {in[0].length, 10, 1};
+        int sizeLayer[] = {in[0].length, 15, 1};
         NeuralNet nn = new NeuralNet(sizeLayer, in, ot);
         nn.initializeTheta();
         int nr  = 10;
         nn.setParameter(1, 0);
         nn.learnNeuralNetwork(nr);
         ReadWriteArray rw = new ReadWriteArray();
-        rw.write3DArray(new File("data/theta.out"), nn.getTheta(), true);
+        rw.writeMultArray(nn.getTheta(), new File("data/theta.out"));
         System.out.printf("cost" + nn.cost());
         int err = 0;
         for (int i = 0;i < in.length;i++) {
